@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manajemen Model Grafik</title>
+<style>
+ body { font-family: sans-serif; margin: 20px; }
+ h1 { font-size: 20px; margin-bottom: 10px; }
+ .model-item { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 6px; }
+ img { max-width: 100%; height: auto; margin-top: 5px; }
+ label { display: block; margin-top: 10px; }
+ button { margin-top: 10px; padding: 8px 12px; border-radius: 6px; border: none; background: #333; color: white; cursor: pointer; }
+ button:hover { background: #555; }
+</style>
+</head>
+<body>
+<h1>Tambah Model Grafik</h1>
+<input type="file" id="imageInput" accept="image/*" />
+<label>Keterangan Model:</label>
+<textarea id="noteInput" rows="3" style="width:100%;"></textarea>
+<button id="saveBtn">Simpan Model</button><h1>Daftar Model</h1>
+<div id="modelList"></div><script>
+function loadModels() {
+  const data = JSON.parse(localStorage.getItem('modelPatterns') || '[]');
+  const container = document.getElementById('modelList');
+  container.innerHTML = '';
+  data.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'model-item';
+    div.innerHTML = `<strong>Model ${index+1}</strong><br>${item.note}<br><img src="${item.img}">`;
+    container.appendChild(div);
+  });
+}
+
+document.getElementById('saveBtn').onclick = function() {
+  const file = document.getElementById('imageInput').files[0];
+  const note = document.getElementById('noteInput').value.trim();
+  if (!file || !note) return alert('Lengkapi gambar & keterangan');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = JSON.parse(localStorage.getItem('modelPatterns') || '[]');
+    data.push({ img: e.target.result, note });
+    localStorage.setItem('modelPatterns', JSON.stringify(data));
+    loadModels();
+  };
+  reader.readAsDataURL(file);
+};
+
+loadModels();
+</script></body>
+</html>
