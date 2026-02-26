@@ -1,51 +1,221 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Manajemen Model Grafik</title>
-<style>
- body { font-family: sans-serif; margin: 20px; }
- h1 { font-size: 20px; margin-bottom: 10px; }
- .model-item { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 6px; }
- img { max-width: 100%; height: auto; margin-top: 5px; }
- label { display: block; margin-top: 10px; }
- button { margin-top: 10px; padding: 8px 12px; border-radius: 6px; border: none; background: #333; color: white; cursor: pointer; }
- button:hover { background: #555; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draft Berita Seberuang | Premium</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --accent: #4285f4;
+            --success: #34a853;
+            --bg: #f8f9fa;
+            --text: #202124;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-card {
+            background: white;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+        .header p { margin: 10px 0 0; opacity: 0.9; font-size: 14px; }
+
+        .form-body { padding: 30px; }
+
+        .input-group { margin-bottom: 20px; }
+        
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            font-size: 13px; 
+            color: #5f6368;
+            text-transform: uppercase;
+        }
+
+        input, textarea { 
+            width: 100%; 
+            padding: 14px; 
+            border: 2px solid #f1f3f4; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 15px;
+            background: #f1f3f4;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(26,115,232,0.1);
+        }
+
+        .result-area {
+            margin-top: 25px;
+            background: #fdfdfd;
+            border: 2px dashed #dadce0;
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+        }
+
+        #hasil {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #3c4043;
+            white-space: pre-wrap;
+            min-height: 60px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-copy { background-color: var(--success); color: white; }
+        .btn-copy:hover { background-color: #2d8e47; transform: translateY(-2px); }
+
+        .btn-gemini { background-color: var(--primary); color: white; }
+        .btn-gemini:hover { background-color: #1557b0; transform: translateY(-2px); }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: #9aa0a6;
+            background: #fafafa;
+            border-top: 1px solid #f1f3f4;
+        }
+
+        /* Animasi saat copy */
+        .copied { background-color: #202124 !important; }
+    </style>
 </head>
 <body>
-<h1>Tambah Model Grafik</h1>
-<input type="file" id="imageInput" accept="image/*" />
-<label>Keterangan Model:</label>
-<textarea id="noteInput" rows="3" style="width:100%;"></textarea>
-<button id="saveBtn">Simpan Model</button><h1>Daftar Model</h1>
-<div id="modelList"></div><script>
-function loadModels() {
-  const data = JSON.parse(localStorage.getItem('modelPatterns') || '[]');
-  const container = document.getElementById('modelList');
-  container.innerHTML = '';
-  data.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.className = 'model-item';
-    div.innerHTML = `<strong>Model ${index+1}</strong><br>${item.note}<br><img src="${item.img}">`;
-    container.appendChild(div);
-  });
-}
 
-document.getElementById('saveBtn').onclick = function() {
-  const file = document.getElementById('imageInput').files[0];
-  const note = document.getElementById('noteInput').value.trim();
-  if (!file || !note) return alert('Lengkapi gambar & keterangan');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const data = JSON.parse(localStorage.getItem('modelPatterns') || '[]');
-    data.push({ img: e.target.result, note });
-    localStorage.setItem('modelPatterns', JSON.stringify(data));
-    loadModels();
-  };
-  reader.readAsDataURL(file);
-};
+<div class="main-card">
+    <div class="header">
+        <h1>📝 Draft Berita Seberuang</h1>
+        <p>Seksi Kesra - Kabupaten Kapuas Hulu</p>
+    </div>
 
-loadModels();
-</script></body>
+    <div class="form-body">
+        <div class="input-group">
+            <label>1. Apa Kegiatannya?</label>
+            <input type="text" id="apa" oninput="updateTeks()" placeholder="Contoh: Rapat Koordinasi Bansos">
+        </div>
+
+        <div class="input-group">
+            <label>2. Siapa yang Hadir?</label>
+            <input type="text" id="siapa" oninput="updateTeks()" placeholder="Contoh: Pak Camat dan Para Kades">
+        </div>
+
+        <div class="input-group">
+            <label>3. Di mana & Kapan?</label>
+            <input type="text" id="dimana" oninput="updateTeks()" placeholder="Contoh: Aula Kantor Camat, Hari Ini">
+        </div>
+
+        <div class="input-group">
+            <label>4. Detail Cerita</label>
+            <textarea id="detail" oninput="updateTeks()" rows="3" placeholder="Contoh: Membahas validasi data warga penerima manfaat."></textarea>
+        </div>
+
+        <label>Preview Perintah AI:</label>
+        <div class="result-area">
+            <div id="hasil">Lengkapi data di atas untuk melihat preview...</div>
+        </div>
+
+        <div class="btn-container">
+            <button onclick="salinData()" id="btnSalin" class="btn btn-copy">
+                📋 SALIN TEKS
+            </button>
+            <a href="https://gemini.google.com" target="_blank" class="btn btn-gemini">
+                🚀 BUKA GEMINI
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        PETUNJUK: ISI DATA > SALIN > TEMPEL DI GEMINI
+    </div>
+</div>
+
+<script>
+    function updateTeks() {
+        const a = document.getElementById('apa').value || "...";
+        const s = document.getElementById('siapa').value || "...";
+        const d = document.getElementById('dimana').value || "...";
+        const det = document.getElementById('detail').value || "...";
+
+        const template = `Tolong buatkan berita formal minimal 3 paragraf dengan gaya bahasa humas kecamatan. Awali dengan kata 'SEBERUANG - '.\n\nDetail:\n- Kegiatan: ${a}\n- Kehadiran: ${s}\n- Lokasi/Waktu: ${d}\n- Tambahan: ${det}`;
+
+        document.getElementById('hasil').innerText = template;
+    }
+
+    function salinData() {
+        const teks = document.getElementById('hasil').innerText;
+        const btn = document.getElementById('btnSalin');
+
+        if(teks.includes("...")) {
+            alert("Harap isi data terlebih dahulu.");
+            return;
+        }
+
+        navigator.clipboard.writeText(teks).then(() => {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✅ TERSALIN!";
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
 </html>
